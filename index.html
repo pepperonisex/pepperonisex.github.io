@@ -8,23 +8,24 @@
             height: 100%;
             margin: 0;
             font-family: Arial, sans-serif;
-            display: flex; /* Utilise Flexbox pour aligner les éléments côte à côte */
-            align-items: center; /* Centre les éléments verticalement */
-            justify-content: center; /* Centre les éléments horizontalement */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #conteneurPhrase {
             padding-left: 20px;
             padding-right: 20px;
             white-space: pre-wrap;
             font-size: 18px;
-            width: 300px; /* Utilise 50% de la largeur disponible */
-            height: 200px; /* Hauteur fixe pour le conteneur de texte */
-            overflow-y: auto; /* Permet le défilement vertical lorsque le contenu dépasse la hauteur */
+            width: 300px;
+            height: 200px;
+            overflow-y: auto;
         }
         img {
-            width: 400px; /* Utilise 50% de la largeur disponible */
-            max-width: 300px; /* Limite la taille du GIF */
-            height: auto; /* Garde l'aspect ratio de l'image */
+            width: 400px;
+            max-width: 300px;
+            transform: scaleX(-1);
+            height: auto;
         }
     </style>
 </head>
@@ -35,7 +36,7 @@
     <script>
         class Phrase {
             constructor() {
-                this.longueur = Math.floor(Math.random() * 6) + 15;  // Longueur de la phrase entre 15 et 20
+                this.longueur = Math.floor(Math.random() * 6) + 15;
             }
 
             generer() {
@@ -43,7 +44,6 @@
                 for (let i = 0; i < this.longueur; i++) {
                     let mot = new Mot().generer();
                     if (i === 0) {
-                        // Capitaliser le premier mot
                         mot = mot.charAt(0).toUpperCase() + mot.slice(1);
                     }
                     resultat += mot + (i < this.longueur - 1 ? ' ' : '.');
@@ -54,13 +54,12 @@
 
         class Mot {
             constructor() {
-                // Répartition des voyelles et consonnes en fonction de leur fréquence en français
-                this.voyelles = 'eeeeeeaaaaaiiiiooouuuy';  // 'e' et 'a' plus fréquents
-                this.consonnes = 'rrrrssstttnnlllmmddccppffhhbbvv';  // Consonnes fréquentes
+                this.voyelles = 'eeeeeeaaaaaiiiiooouuuy';
+                this.consonnes = 'rrrrssstttnnlllmmddccppffhhbbvv';
             }
 
             static obtenirLongueurMotAleatoire() {
-                const poids = [15, 25, 25, 20, 10, 5];  // Fréquences ajustées pour des mots plus courts
+                const poids = [15, 25, 25, 20, 10, 5];
                 const probabilitesLongueur = poids.map((poid, index) => Array(poid).fill(index + 1)).flat();
                 return probabilitesLongueur[Math.floor(Math.random() * probabilitesLongueur.length)];
             }
