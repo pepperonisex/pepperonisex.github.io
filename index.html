@@ -1,1 +1,118 @@
-Hello World
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex; /* Utilise Flexbox pour aligner les éléments côte à côte */
+            align-items: center; /* Centre les éléments verticalement */
+            justify-content: center; /* Centre les éléments horizontalement */
+        }
+        #conteneurPhrase {
+            padding-left: 20px;
+            padding-right: 20px;
+            white-space: pre-wrap;
+            font-size: 18px;
+            width: 300px; /* Utilise 50% de la largeur disponible */
+            height: 200px; /* Hauteur fixe pour le conteneur de texte */
+            overflow-y: auto; /* Permet le défilement vertical lorsque le contenu dépasse la hauteur */
+        }
+        img {
+            width: 400px; /* Utilise 50% de la largeur disponible */
+            max-width: 300px; /* Limite la taille du GIF */
+            height: auto; /* Garde l'aspect ratio de l'image */
+        }
+    </style>
+</head>
+<body>
+    <img src="typing.gif" alt="Typing Animation">
+    <div id="conteneurPhrase"></div>
+    
+    <script>
+        class Phrase {
+            constructor() {
+                this.longueur = Math.floor(Math.random() * 6) + 15;  // Longueur de la phrase entre 15 et 20
+            }
+
+            generer() {
+                let resultat = "";
+                for (let i = 0; i < this.longueur; i++) {
+                    let mot = new Mot().generer();
+                    if (i === 0) {
+                        // Capitaliser le premier mot
+                        mot = mot.charAt(0).toUpperCase() + mot.slice(1);
+                    }
+                    resultat += mot + (i < this.longueur - 1 ? ' ' : '.');
+                }
+                return resultat;
+            }
+        }
+
+        class Mot {
+            constructor() {
+                // Répartition des voyelles et consonnes en fonction de leur fréquence en français
+                this.voyelles = 'eeeeeeaaaaaiiiiooouuuy';  // 'e' et 'a' plus fréquents
+                this.consonnes = 'rrrrssstttnnlllmmddccppffhhbbvv';  // Consonnes fréquentes
+            }
+
+            static obtenirLongueurMotAleatoire() {
+                const poids = [15, 25, 25, 20, 10, 5];  // Fréquences ajustées pour des mots plus courts
+                const probabilitesLongueur = poids.map((poid, index) => Array(poid).fill(index + 1)).flat();
+                return probabilitesLongueur[Math.floor(Math.random() * probabilitesLongueur.length)];
+            }
+
+            obtenirCaractereAleatoire(ensembleChars) {
+                return ensembleChars[Math.floor(Math.random() * ensembleChars.length)];
+            }
+
+            generer() {
+                let longueurMot = Mot.obtenirLongueurMotAleatoire();
+                let resultat = "";
+                for (let i = 0; i < longueurMot; i++) {
+                    let motif = Math.random() > 0.5 ? 'CVC' : 'VC';
+                    for (let char of motif) {
+                        resultat += this.obtenirCaractereAleatoire(char === 'C' ? this.consonnes : this.voyelles);
+                    }
+                }
+                return resultat;
+            }
+        }
+
+        let autoScrollEnabled = true;
+
+        function ajouterLettre(lettre) {
+            const conteneur = document.getElementById('conteneurPhrase');
+            conteneur.textContent += lettre;
+            if (autoScrollEnabled) {
+                conteneur.scrollTop = conteneur.scrollHeight;
+            }
+        }
+
+        async function taperPhrase() {
+            while (true) {
+                const phrase = new Phrase().generer();
+                for (const lettre of phrase) {
+                    ajouterLettre(lettre);
+                    await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * 100) + 50));
+                }
+                ajouterLettre(' ');
+            }
+        }
+
+        const conteneur = document.getElementById('conteneurPhrase');
+        conteneur.addEventListener('mouseenter', () => {
+            autoScrollEnabled = false;
+        });
+        conteneur.addEventListener('mouseleave', () => {
+            autoScrollEnabled = true;
+            conteneur.scrollTop = conteneur.scrollHeight;
+        });
+
+        taperPhrase();
+    </script>
+</body>
+</html>
